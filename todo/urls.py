@@ -19,4 +19,9 @@ from todo_app import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.home, name='overview'),
+    path('item-list/', views.item_list, name = 'item-list'),
+    path('item-detial/<str:pk>',views.item_detail, name='item-detial'),
+    path('item-create/',views.item_create),
+    path('item-update/<str:pk>',views.item_update, name='item-update'),
+    path('item-delete/<str:pk>',views.item_delete, name='item-delete'),
     ]

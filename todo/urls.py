@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from todo_app import views
+from frontend import views as front_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.home, name='overview'),
@@ -24,4 +25,5 @@ urlpatterns = [
     path('item-create/',views.item_create),
     path('item-update/<str:pk>',views.item_update, name='item-update'),
     path('item-delete/<str:pk>',views.item_delete, name='item-delete'),
+    path('list/',front_views.list),
     ]

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>Document</title>
+    <style>
+        body{
+            background: rgba(54, 217, 182);
+            background: linear-gradient(90deg, rgba(54,217,182,1) 0%, rgba(32,152,126,1) 43%, rgba(0,212,255,1) 100%);
+        }
+    </style>
+</head>
+<body>
+<div id ='form-wrapper'>
+    <form id = 'form' method='POST'>
+        {% csrf_token %}
+        <input id='title' type='text'>
+        <input id='description' type="textbox">
+        <input id='submit' class='btn' type='submit'>
+    </form>
+</div>
+    <div id ='list-wrapper'>
+    </div>
+    <script>
+        build_list()
+        function build_list(){
+            var wrapper = document.getElementById('list-wrapper')
+            wrapper.innerHTML = ''
+            var url = 'http://127.0.0.1:8000/item-list/'
+            fetch(url)
+            .then((resp) => resp.json())
+            .then(function(data){
+                console.log('Data:', data)
+
+                var list = data
+                for (var i in list){
+                    var item = `
+                        <div>
+                            <div style='flex:7'>
+                            <span class='title'>${list[i].title}</span>
+                            <span class='title'>${list[i].description}</span>
+                            </div>
+                        </div>
+                    `
+                    wrapper.innerHTML += item
+                }
+            })
+        }
+
+        var form = document.getElementById('form-wrapper')
+        form.addEventListener('submit', function(e){
+            e.preventDefault()
+            console.log("form submit")
+            var url = 'http://127.0.0.1:8000/item-create/'
+            var title = document.getElementById('title').value
+            var description = document.getElementById('description').value
+            fetch(url, {
+                method: 'POST',
+                headers:{
+                    'content-type': 'application/json',
+
+                },
+                body:JSON.stringify({'title':title, 'description': description})
+            }
+            ).then(function(response){
+                build_list()
+            })
+        })
+    </script>
+</body>
+</html>

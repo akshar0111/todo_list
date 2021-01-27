@@ -22,8 +22,10 @@
     </form>
 </div>
     <div id ='list-wrapper'>
+    <button>edit</button>
     </div>
     <script>
+        var active_item = null
         build_list()
         function build_list(){
             var wrapper = document.getElementById('list-wrapper')
@@ -41,10 +43,29 @@
                             <div style='flex:7'>
                             <span class='title'>${list[i].title}</span>
                             <span class='title'>${list[i].description}</span>
+                            <button class='btn edit'>Edit</button>
+                            <button class='btn delete'>delete</button>
                             </div>
                         </div>
                     `
                     wrapper.innerHTML += item
+                }
+                for (var i in list){
+                    var edit_btn = document.getElementsByClassName('edit')[i]
+                    var delete_btn = document.getElementsByClassName('delete')[i]
+                    edit_btn.addEventListener('click', (function(item){
+                        return function(){
+                            edit_item(item)
+                        }
+                    })(list[i]))
+
+                    delete_btn.addEventListener('click', (function(item){
+                        return function(){
+                            delete_item(item)
+                        }
+                    })(list[i]))
+
+
                 }
             })
         }
@@ -54,6 +75,10 @@
             e.preventDefault()
             console.log("form submit")
             var url = 'http://127.0.0.1:8000/item-create/'
+            if (active_item != null){
+                var url = 'http://127.0.0.1:8000/item-update/${active_item.id}/'
+                active_item = null
+            }
             var title = document.getElementById('title').value
             var description = document.getElementById('description').value
             fetch(url, {
@@ -68,6 +93,22 @@
                 build_list()
             })
         })
+        function edit_item(item){
+            console.log('item clicked', item)
+            active_item = item
+            document.getElementById('item').value = active_item.title
+        }
+        function delete_item(item){
+            console.log('delete click')
+            fetch(`http://127.0.0.1:8000/item-delete/${active_item.id}`,{
+                method: 'DELETE',
+                headers: {
+                    'content-type': 'application/json',
+                }
+            }).then((response) => {
+                build_list()
+            })
+        }
     </script>
 </body>
 </html>

@@ -75,6 +75,7 @@
             e.preventDefault()
             console.log("form submit")
             var url = 'http://127.0.0.1:8000/item-create/'
+
             if (active_item != null){
                 var url = 'http://127.0.0.1:8000/item-update/${active_item.id}/'
                 active_item = null
@@ -91,20 +92,24 @@
             }
             ).then(function(response){
                 build_list()
+                document.getElementById('form').reset()
             })
         })
         function edit_item(item){
             console.log('item clicked', item)
             active_item = item
-            document.getElementById('item').value = active_item.title
+            document.getElementById('title').value = active_item.title
         }
         function delete_item(item){
             console.log('delete click')
+            console.log(active_item)
+            active_item = item
+            document.getElementById('title').value = active_item.title
             fetch(`http://127.0.0.1:8000/item-delete/${active_item.id}`,{
                 method: 'DELETE',
                 headers: {
                     'content-type': 'application/json',
-                }
+                },
             }).then((response) => {
                 build_list()
             })
